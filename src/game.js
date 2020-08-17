@@ -1,4 +1,5 @@
-import maze from "./maze";
+import maze from "./maze/Maze";
+import {MazeGenerator, EllersAlgoritm, RecursiveBackTracker} from "./maze/MazeGenerator";
 import Puppet from "./puppet";
 export default class game {
   constructor(canvas, width, height, cellwidth, cellheight) {
@@ -7,14 +8,16 @@ export default class game {
     canvas.setAttribute('height',height);
     this.context = canvas.getContext("2d");
     this.context.clearRect(0, 0, width, height);
-    this.maze = new maze(width, height, cellwidth, cellheight);
+    this.maze = new maze(width, height, cellwidth, cellheight, new RecursiveBackTracker());
     this.puppets = [];
   }
 
   init() {
+    console.log('generate the game');
     this.maze.generate();
+
     for(let i = 0 ; i < this.puppetcount ; i++){
-      this.puppets.push(new Puppet(0,0, this.maze));
+      this.puppets.push(new Puppet(this.maze));
     }
     this.gameLoop();
   }
