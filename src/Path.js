@@ -24,10 +24,88 @@ export default class Path{
     }
 
     findPath(){
-        console.log('we zoeken een pad');
-        console.log(this.start);
-        console.log(this.end);
-        return this.getPath(this.start);
+        console.log('find path');
+        this.path = [];
+        let openSet = [];
+        let closedSet = [];
+        openSet.push(this.start);
+
+        while(openSet.length > 0){
+            let current = this.getLowest(openSet);
+
+            if(current.equals(this.end)){
+                console.log('we hebben een pad');
+                return this.traversePath(current);
+            }
+
+            this.removeFromList(openSet,current);
+            closedSet.push(current);
+            let neighbours = this.getAdjacentNodes(current);
+            for(const n of neighbours){
+                if(this.inList(closedSet,n)){
+                    continue;
+                }
+                var tempG = current.g+1;
+                if(this.inList(openSet,n)){
+                    if(tempG < n.g){
+                        n.g = tempG;
+                    }
+                }else{
+                    n.g = tempG;
+                    openSet.push(n);
+                }
+                n.setParent(current);
+                n.h = this.heuristic(n,this.end);
+                n.f = n.g+n.h;
+            }
+        }
+        console.log('no solution??');
+    }
+
+    heuristic(start,end){
+        return Math.abs(start.x-end.x)+ Math.abs(start.y-end.y);
+    }
+
+    inList(list,entry){
+        for(let i = 0; i < list.length;i++){
+            if(list[i].equals(entry)){
+                return true;
+            }
+        }
+        return false;
+    }
+    removeFromList(list,entry){
+        let index = -1;
+        for(let i = 0; i < list.length;i++){
+            if(list[i].equals(entry)){
+                index = i;
+                break;
+            }
+        }
+        if(index > -1) {
+            list.splice(index, 1);
+        }
+    }
+
+    getLowest(list){
+       let lowest = list[0];
+       for(let i= 0;i<list.length;i++){
+           if(list[i].f < lowest.f){
+               lowest = list[i];
+           }
+       }
+       return lowest;
+    }
+    sortQueue(q){
+        return q.sort((a,b)=>{
+            if(a.getDistance() > b.getDistance()){
+                return 1;
+            }
+            if(a.getDistance() < b.getDistance()){
+                return -1;
+            }
+            return 0;
+        });
     }
 
     /**
@@ -85,44 +163,29 @@ export default class Path{
     }
 
 
-    getAdjacentNodes(currentNode){
+    getAdjacentNodes(currentNode,closedList){
         let adjacent = [];
         // north
         if(this.maze.isOpen(currentNode.x,currentNode.y-1)){
-            adjacent.push(new Cell(
-               currentNode.x,
-               currentNode.y-1,
-               currentNode.g+1,
-                currentNode.end,
-            ));
+            let north = new Cell(currentNode.x,currentNode.y-1);
+            adjacent.push(north);
+
         }
 
         // east
         if(this.maze.isOpen(currentNode.x+1,currentNode.y)){
-            adjacent.push(new Cell(
-                currentNode.x+1,
-                currentNode.y,
-                currentNode.g+1,
-                currentNode.end,
-            ));
+            let east = new Cell(currentNode.x+1,currentNode.y);
+            adjacent.push(east);
         }
         // south
         if(this.maze.isOpen(currentNode.x,currentNode.y+1)){
-            adjacent.push(new Cell(
-                currentNode.x,
-                currentNode.y+1,
-                currentNode.g+1,
-                currentNode.end,
-            ));
+            let south = new Cell(currentNode.x,currentNode.y+1);
+            adjacent.push(south);
         }
         // west
         if(this.maze.isOpen(currentNode.x-1,currentNode.y)){
-            adjacent.push(new Cell(
-                currentNode.x-1,
-                currentNode.y,
-                currentNode.g+1,
-                currentNode.end,
-            ));
+            let west = new Cell(currentNode.x-1,currentNode.y);
+            adjacent.push(west);
         }
         return adjacent;
     }

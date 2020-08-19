@@ -2,6 +2,10 @@ export default class Cell{
     constructor(x,y,parent){
         this.x = parseInt(x);
         this.y = parseInt(y);
+        this.f = 0;
+        this.g = 0;
+        this.h = 0;
+
         if(isNaN(this.x)){
             console.log('kak');
             console.log(x);
@@ -14,8 +18,19 @@ export default class Cell{
         this.parent = parent;
 
     }
+    getDistance(){
+        return this.distance;
+    }
+
+    setDistance(d){
+        this.distance= d;
+    }
+
     equals(cell){
-        return (cell != null && cell.key === this.key);
+        if(cell == null){
+            return false;
+        }
+        return (cell.key == this.key);
     }
     setParent(p){
         this.parent = p;
