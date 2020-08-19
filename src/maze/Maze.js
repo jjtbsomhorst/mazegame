@@ -1,8 +1,10 @@
 /**
- * this class contains the metadata of a maze so we can draw on it and set various properties
+ * this class con   tains the metadata of a maze so we can draw on it and set various properties
  *
  * @type {number}
  */
+
+import Cell from "../Cell";
 
 const TOP = 0;
 const RIGHT = 1;
@@ -35,27 +37,7 @@ class maze {
         this.generator.setMaze(this);
         this.generator.generate();
         this.changed = true;
-        this.doors = [];
-
-        for(let x = 0; x < this.maxColumns;x++){
-            if(this.maze[0][x] === 0 ){
-                this.doors.push("".concat(x,":",0))
-            }
-            if(this.maze[this.maxRows-1][x] === 0){
-                this.doors.push("".concat(x,":",this.maxRows-1))
-            }
-        }
-        for(let y = 0; y < this.maxRows;y++){
-            if(this.maze[y][0] === 0){
-                this.doors.push("".concat(0,":",y));
-            }
-            if(this.maze[y][this.maxColumns-1]===0){
-                this.doors.push("".concat(this.maxColumns-1,":",y));
-            }
-        }
     }
-
-
 
     draw(ctx) {
         if (this.changed) {
@@ -75,15 +57,16 @@ class maze {
     }
 
     getStart(){
-        return this.doors.shuffle()[0].split(":");
+        return this.doors.shuffle()[0];
     }
 
     getEnd(start){
-        let end = this.doors.shuffle()[0];
-        if(start[0] === end.split(":")[0]){
+        let d = this.doors.shuffle()[0];
+
+        if(start.equals(d)){
             return this.getEnd(start);
         }
-        return end.split(":");
+        return d;
     }
 
     open(x, y) {
@@ -99,7 +82,9 @@ class maze {
             if (this.maze[x].length > y) {
                 if (this.maze[x][y] !== state) {
                     this.maze[x][y] = state;
-                    this.changed = true;
+                    if(state === 0) {
+                        this.doors.push(new Cell(x, y));
+                    }
                 }
             }
         }

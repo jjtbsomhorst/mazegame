@@ -13,7 +13,6 @@ export default class game {
   }
 
   init() {
-    console.log('generate the game');
     this.maze.generate();
 
     for(let i = 0 ; i < this.puppetcount ; i++){

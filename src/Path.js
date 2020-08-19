@@ -6,48 +6,40 @@ import Cell from './Cell';
  *
  */
 export default class Path{
-    constructor(maze,start){
-
+    constructor(maze){
         this.maze = maze;
-        this.start = new Cell(
-            parseInt(start[0]),
-            parseInt(start[1]),
-        );
+        this.start = maze.getStart();
+        this.end = maze.getEnd(this.start);
         this.visitedList = [];
+        this.path = [];
+        this.pathNode = -1;
     }
-    findPath(){
-        console.log('find the path');
-        setTimeout(()=>{
-            this.getPath(this.start);
-        },1000);
 
+    getStart(){
+        return this.start;
+    }
+
+    getEnd(){
+        return this.end;
+    }
+
+    findPath(){
+        console.log('we zoeken een pad');
+        console.log(this.start);
+        console.log(this.end);
+        return this.getPath(this.start);
     }
 
     /**
-     * 1 for the current cell
-     *  find adjacent cells
-     *  if(children)
-     *      pick the first
-     *      check if we already visited
-     *          pick another one
-     *      else
-     *          go to 1
-     *   else
-     *      if(parent go 1 with parent
-     *      else die
-     *
-     *
      * @param start
      */
     getPath(start){
-        console.log('generate path');
         if(!this.isOnVisitedlist(start)){
             this.visitedList.push(start);
             let children = this.getAdjacentNodes(start);
             for(const c of children){
                 if(!this.isOnVisitedlist(c)){
                     c.setParent(start);
-                    // setTimeout(()=>{this.getPath(c)},500);
                     return this.getPath(c);
                 }
             }
@@ -55,19 +47,43 @@ export default class Path{
                 return this.getPath(start.parent);
             }
         }else{
-            console.log('We are already visited.. Lets see if we have unvisited children');
+            if(this.end.key === start.key){
+                console.log('path gevonden');
+                this.end.setParent(start);
+                return this.traversePath(this.end);
+            }
+
             let children = this.getAdjacentNodes(start);
             for(const c of children){
                 if(!this.isOnVisitedlist(c)){
                     this.visitedList.push(c);
-                    // c.setParent(start);
-                    setTimeout(()=>{this.getPath(c)},1000);
+                    c.setParent(start);
+                    return this.getPath(c);
                 }
             }
-            return false;
+
+            if(start.key === this.start.key) {
+                console.log('geen path?');
+                this.visitedList = [];
+                this.start = this.maze.getStart();
+                this.end = this.maze.getEnd(this.start);
+                return this.getPath(this.start);
+            }
+
+            return this.getPath(start.parent);
         }
 
     }
+
+    traversePath(cell) {
+        this.path.push(cell);
+        if(cell.getParent() == null){
+            console.log('we are at home');
+            return this.path;
+        }
+        return this.traversePath(cell.getParent());
+    }
+
 
     getAdjacentNodes(currentNode){
         let adjacent = [];
@@ -111,6 +127,16 @@ export default class Path{
         return adjacent;
     }
 
+    getNextOnPath(){
+        if(this.path.length > 0) {
+            if (this.pathNode < this.path.length) {
+                this.pathNode +=1;
+                return this.path[this.pathNode];
+            }
+        }
+        return null;
+    }
+
     isOnVisitedlist(cell){
         for(let c of this.visitedList){
             if(c.key === cell.key){
@@ -118,66 +144,5 @@ export default class Path{
             }
         }
         return false;
-    }
-    isOnClosedList(cell){
-        for(let c of this.closedList){
-            if(c.key === cell.key){
-                return true;
-            }
-        }
-        return false;
-    }
-    sortOpenList(){
-        // console.log('sort the openlist');
-        this.openList.sort((p1,p2)=>{
-           if(p1.f > p2.f ){
-               return 1;
-           }
-           if(p1.f < p2.f ){
-               return -1;
-           }
-           return 0;
-        });
-    }
-
-    findLowest(){
-        return this.openList.reduce((min,p)=>{
-            if(p.f < min){
-                return p;
-            }else if(min < p.f){
-                return min;
-            }else{
-                return this.openList[0];
-            }
-        });
-        return lowest;
-    }
-
-    draw(ctx,node){
-        // color the current cell dark
-        // color the visited cells bright
-        let previousFillStyle = ctx.fillStyle;
-        for(const c of this.visitedList){
-            ctx.fillStyle = "#5dffb1";
-            if(this.visitedList.indexOf(c)  === this.visitedList.length-1){
-                ctx.fillStyle = "#fc0000";
-            }
-
-            ctx.fillRect(c.x*10,c.y*10,10,10);
-            ctx.fillStyle = previousFillStyle;
-
-        }
-        ctx.fillStyle = previousFillStyle;
-        // console.log('draw the path');
-        // if(node == null){
-            // node = this.findLowest();
-            // if(node != null){
-            //     let previousFillStyle = ctx.fillStyle;
-            //     ctx.fillStyle = "#000066";
-            //     ctx.fillRect(node.x*10,node.y*10,10,10);
-            //     ctx.fillStyle = previousFillStyle;
-            //     this.draw(ctx,node.parent);
-            // }
-        // }
     }
 }

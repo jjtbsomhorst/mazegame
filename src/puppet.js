@@ -23,39 +23,33 @@
  */
 import Path from './Path';
 
-const COLORS = ["#26532B","#df2935","#fdca40"];
-
+const STARTCOLOR = "#df2935";
+const PATHCOLOR = "#0eff00";
+const ENDCOLOR = "#0004e3";
 class puppet{
 
     constructor(maze){
         this.maze = maze;
         this.health = 100;
         this.dt = -1;
-        this.path = null
-        this.start = this.maze.getStart();
-        this.end = this.maze.getEnd(this.start);
-        this.color = COLORS.shuffle()[0];
-
-    }
-
-    findPath(){
-        this.path = new Path(this.maze,this.start,this.end);
-        this.path.findPath();
+        this.path = null;
+        this.color = STARTCOLOR;
     }
 
     update(dt,ctx){
         if(this.path == null){
-            this.path = new Path(this.maze,this.start,this.end);
-            this.path.findPath()
+            this.path = new Path(this.maze);
+            this.path.findPath();
         }
 
         if(this.dt === -1){
             this.dt = dt;
         }
 
-        if(dt - this.dt > 1000){
+        if(dt - this.dt > 100){
+
             this.dt = dt;
-            this.traversePath();
+
             this.draw(ctx);
         }
 
@@ -63,21 +57,26 @@ class puppet{
 
     /**
      * We move on to the next step in the path
-     * if the next step is not 'free' we generate a new path from the current position and wait
+     * if the next step is not _'free' we generate a new path from the current position and wait
      * for the next tick
     */
 
-    traversePath(){
 
-    }
     draw(ctx){
-        console.log('draw puppet');
+        this.update(ctx);
         let previousFillStyle = ctx.fillStyle;
-        ctx.fillStyle = this.color;
-        ctx.fillRect(this.start[0]*10,this.start[1]*10,10,10);
-        ctx.fillStyle = previousFillStyle;
+        ctx.fillStyle = STARTCOLOR;
+        ctx.fillRect(this.path.getStart().x*10,this.path.getStart().y*10,10,10);
+        ctx.fillStyle= ENDCOLOR;
+        ctx.fillRect(this.path.getEnd().x*10,this.path.getEnd().y*10,10,10);
 
-        this.path.draw(ctx);
+        let currentNode = this.path.getNextOnPath();
+        if(currentNode != null){
+            ctx.fillStyle = PATHCOLOR;
+            ctx.fillRect(currentNode.x*10,currentNode.y*10,10,10);
+        }
+
+        ctx.fillStyle = previousFillStyle;
     }
 
 }
