@@ -10,14 +10,18 @@ export default class game {
     this.context.clearRect(0, 0, width, height);
     this.maze = new maze(width, height, cellwidth, cellheight, new RecursiveBackTracker());
     this.puppets = [];
+    this.puppetCount = 5;
   }
 
   init() {
     this.maze.generate();
-    console.log(this.puppetcount);
-    for(let i = 0 ; i < this.puppetcount ; i++){
-      this.puppets.push(new Puppet(this.maze));
+    console.log(this.puppetCount);
+    for(let i = 0 ; i < this.puppetCount ; i++){
+      let p = new Puppet(this.maze,i);
+      p.init();
+      this.puppets.push(p);
     }
+    console.log('start the gameloop');
     this.gameLoop();
   }
 
@@ -34,17 +38,11 @@ export default class game {
       this.onAnimationFrame(dt);
     });
   }
+  setPuppetCount(c){
+    this.puppetCount = c;
+  }
 
   onAnimationFrame(timestamp) {
     this.gameLoop();
-  }
-
-  setPuppetCount(number) {
-    this.puppetcount = 5;
-    // console.log('puppetcount');
-    // console.log(number);
-    // this.puppetcount = number;
-    // // this.puppetcount = number > 0 ? number: 10;
-    // // console.log(this.puppetcount);
   }
 }

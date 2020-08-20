@@ -41,6 +41,7 @@ class maze {
 
     draw(ctx) {
         if (this.changed) {
+            console.log('draw the maze');
             for(let y = 0 ; y < this.maxRows;y++){
                 for(let x = 0; x < this.maxColumns;x++){
                     if(this.maze[y][x] === 1){
@@ -63,7 +64,7 @@ class maze {
     getEnd(start){
         let d = this.doors.shuffle()[0];
 
-        if(start.equals(d)){
+        if(start.equals(d) || start.x === d.x || start.y === d.y){
             return this.getEnd(start);
         }
         return d;
@@ -83,7 +84,13 @@ class maze {
                 if (this.maze[x][y] !== state) {
                     this.maze[x][y] = state;
                     if(state === 0) {
-                        this.doors.push(new Cell(x, y));
+                        if(x === 0 || x === this.maxRows-1){
+                            this.doors.push(new Cell(x, y));
+                        }
+                        if(y === 0 || y === this.maxColumns-1){
+                            this.doors.push(new Cell(x,y));
+                        }
+
                     }
                 }
             }

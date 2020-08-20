@@ -23,17 +23,18 @@ export default class Path{
         return this.end;
     }
 
-    findPath(){
+    findPath(index){
+        console.log('start finding a path for '.concat(index));
         this.path = [];
         let openSet = [];
         let closedSet = [];
         openSet.push(this.start);
 
         while(openSet.length > 0){
-            let current = this.getLowest(openSet);
-
+            openSet = this.sortQueue(openSet);
+            let current = openSet[0];
             if(current.equals(this.end)){
-                console.log('we hebben een pad');
+                console.log('we found a path for '.concat(index));
                 return this.traversePath(current);
             }
 
@@ -58,9 +59,9 @@ export default class Path{
                 n.f = n.g+n.h;
             }
         }
-        this.start = this.maze.getStart();
-        this.end =this.maze.getEnd(this.start);
-        return this.findPath();
+        // return this.findPath(index);
+        console.log('we didnt find a path for '.concat(index));
+        return []
 
     }
 
@@ -90,6 +91,7 @@ export default class Path{
     }
 
     getLowest(list){
+        // console.log('get lowest in the list');
        let lowest = list[0];
        for(let i= 0;i<list.length;i++){
            if(list[i].f < lowest.f){
@@ -99,21 +101,24 @@ export default class Path{
        return lowest;
     }
     sortQueue(q){
-        return q.sort((a,b)=>{
-            if(a.getDistance() > b.getDistance()){
-                return 1;
-            }
-            if(a.getDistance() < b.getDistance()){
-                return -1;
-            }
-            return 0;
-        });
+        if(q.length > 1){
+            return q.sort((a,b)=>{
+                if(a.f > b.f){
+                    return 1;
+                }
+                if(a.f < b.f){
+                    return -1;
+                }
+                return 0;
+            });
+        }
+        return q;
+
     }
 
     traversePath(cell) {
         this.path.push(cell);
         if(cell.getParent() == null){
-            console.log('we are at home');
             return this.path;
         }
         return this.traversePath(cell.getParent());
@@ -145,6 +150,14 @@ export default class Path{
             adjacent.push(west);
         }
         return adjacent;
+    }
+
+    getPreviousOnPath(){
+        if(this.pathNode -1 < 1) {
+            return this.getStart();
+        }
+        return this.path[this.pathNode-1];
+
     }
 
     getNextOnPath(){

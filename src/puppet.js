@@ -28,19 +28,26 @@ const PATHCOLOR = "#0eff00";
 const ENDCOLOR = "#0004e3";
 class puppet{
 
-    constructor(maze){
+    constructor(maze,index){
+        this.index = index;
         this.maze = maze;
         this.health = 100;
         this.dt = -1;
         this.path = null;
         this.color = STARTCOLOR;
+
+    }
+
+    init(){
+        if(this.path == null){
+            this.path = new Path(this.maze);
+            this.path.findPath(this.index);
+
+        }
     }
 
     update(dt,ctx){
-        if(this.path == null){
-            this.path = new Path(this.maze);
-            this.path.findPath();
-        }
+
 
         if(this.dt === -1){
             this.dt = dt;
@@ -65,12 +72,21 @@ class puppet{
     draw(ctx){
         this.update(ctx);
         let previousFillStyle = ctx.fillStyle;
-        ctx.fillStyle = STARTCOLOR;
-        ctx.fillRect(this.path.getStart().x*10,this.path.getStart().y*10,10,10);
+
+
         ctx.fillStyle= ENDCOLOR;
         ctx.fillRect(this.path.getEnd().x*10,this.path.getEnd().y*10,10,10);
 
+        let previousNode = this.path.getPreviousOnPath();
         let currentNode = this.path.getNextOnPath();
+
+        if(previousNode.equals(this.path.getStart())){
+            ctx.fillStyle = STARTCOLOR;
+        }else{
+            ctx.fillStyle = "#FFFFFF";
+        }
+        ctx.fillRect(previousNode.x*10,previousNode.y*10,10,10);
+
         if(currentNode != null){
             ctx.fillStyle = PATHCOLOR;
             ctx.fillRect(currentNode.x*10,currentNode.y*10,10,10);
