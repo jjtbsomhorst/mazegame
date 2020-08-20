@@ -46,7 +46,7 @@ class puppet{
             this.dt = dt;
         }
 
-        if(dt - this.dt > 100){
+        if(dt - this.dt > 50){
 
             this.dt = dt;
 

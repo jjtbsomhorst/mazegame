@@ -14,7 +14,7 @@ export default class game {
 
   init() {
     this.maze.generate();
-
+    console.log(this.puppetcount);
     for(let i = 0 ; i < this.puppetcount ; i++){
       this.puppets.push(new Puppet(this.maze));
     }
@@ -40,7 +40,11 @@ export default class game {
   }
 
   setPuppetCount(number) {
-    this.puppetcount = number > 0 ? number: 10;
-    console.log(this.puppetcount);
+    this.puppetcount = 5;
+    // console.log('puppetcount');
+    // console.log(number);
+    // this.puppetcount = number;
+    // // this.puppetcount = number > 0 ? number: 10;
+    // // console.log(this.puppetcount);
   }
 }

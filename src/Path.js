@@ -24,7 +24,6 @@ export default class Path{
     }
 
     findPath(){
-        console.log('find path');
         this.path = [];
         let openSet = [];
         let closedSet = [];
@@ -59,7 +58,10 @@ export default class Path{
                 n.f = n.g+n.h;
             }
         }
-        console.log('no solution??');
+        this.start = this.maze.getStart();
+        this.end =this.maze.getEnd(this.start);
+        return this.findPath();
+
     }
 
     heuristic(start,end){
@@ -106,51 +108,6 @@ export default class Path{
             }
             return 0;
         });
-    }
-
-    /**
-     * @param start
-     */
-    getPath(start){
-        if(!this.isOnVisitedlist(start)){
-            this.visitedList.push(start);
-            let children = this.getAdjacentNodes(start);
-            for(const c of children){
-                if(!this.isOnVisitedlist(c)){
-                    c.setParent(start);
-                    return this.getPath(c);
-                }
-            }
-            if(start.parent != null){
-                return this.getPath(start.parent);
-            }
-        }else{
-            if(this.end.key === start.key){
-                console.log('path gevonden');
-                this.end.setParent(start);
-                return this.traversePath(this.end);
-            }
-
-            let children = this.getAdjacentNodes(start);
-            for(const c of children){
-                if(!this.isOnVisitedlist(c)){
-                    this.visitedList.push(c);
-                    c.setParent(start);
-                    return this.getPath(c);
-                }
-            }
-
-            if(start.key === this.start.key) {
-                console.log('geen path?');
-                this.visitedList = [];
-                this.start = this.maze.getStart();
-                this.end = this.maze.getEnd(this.start);
-                return this.getPath(this.start);
-            }
-
-            return this.getPath(start.parent);
-        }
-
     }
 
     traversePath(cell) {
