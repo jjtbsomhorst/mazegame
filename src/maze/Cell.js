@@ -1,3 +1,4 @@
+
 export default class Cell{
     constructor(x,y,parent){
         this.x = parseInt(x);

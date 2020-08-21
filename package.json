@@ -2,10 +2,10 @@
   "name": "vanilla",
   "version": "1.0.0",
   "description": "JavaScript example starter project",
-  "main": "index.html",
+  "main": "maze.html",
   "scripts": {
-    "start": "parcel index.html --open",
-    "build": "parcel build index.html"
+    "start": "parcel maze.html --open",
+    "build": "parcel build maze.html"
   },
   "dependencies": {},
   "devDependencies": {

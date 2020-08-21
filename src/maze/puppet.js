@@ -67,8 +67,6 @@ class puppet{
      * if the next step is not _'free' we generate a new path from the current position and wait
      * for the next tick
     */
-
-
     draw(ctx){
         this.update(ctx);
         let previousFillStyle = ctx.fillStyle;

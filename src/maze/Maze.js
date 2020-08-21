@@ -4,7 +4,7 @@
  * @type {number}
  */
 
-import Cell from "../Cell";
+import Cell from "./Cell";
 
 const TOP = 0;
 const RIGHT = 1;

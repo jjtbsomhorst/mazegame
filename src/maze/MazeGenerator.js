@@ -1,4 +1,4 @@
-import Cell from '../Cell';
+import Cell from './Cell';
 
 /**
  * this file contains various algoritms to generate a maze given a certain array of 'cells'

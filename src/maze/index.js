@@ -1,5 +1,5 @@
-import "./styles.css";
-import game from "./game";
+import './styles.css'
+import game from './game';
 
 // implement sprintf
 
