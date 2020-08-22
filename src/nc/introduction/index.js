@@ -24,10 +24,20 @@ if(!Array.prototype.shuffle){
     }
 }
 
+if(!Math.randNbm){
+    Math.randNbm = function(){
+        let u = 0, v = 0;
+        while(u === 0) u = Math.random(); //Converting [0,1) to (0,1)
+        while(v === 0) v = Math.random();
+        return Math.sqrt( -2.0 * Math.log( u ) ) * Math.cos( 2.0 * Math.PI * v );
+    }
+}
+
 
 document.body = document.createElement("body");
 let canvas = document.createElement('canvas');
 canvas.setAttribute('style','border: 1px solid black');
 let r = new rw(canvas,640,480);
-r.draw();
+r.gameLoop();
+
 document.body.appendChild(canvas);
