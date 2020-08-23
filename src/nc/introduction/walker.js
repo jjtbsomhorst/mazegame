@@ -1,38 +1,33 @@
 import Vector from "./Vector";
 export default class Walker {
 
-    constructor(width,height){
-        console.log('we walkk the canvas');
-        this.v = new Vector(this.random(0,width),this.random(0,height));
+    constructor(location,m){
+        this.location = location.clone();
+        this.velocity = new Vector(0,0);
+        this.acceleration = new Vector(0,0);
+        this.mass = m;
     }
-    random(min,max){
-        return Math.floor(Math.random() * (max - min + 1) + min);
+
+    update(){
+        this.velocity.add(this.acceleration);
+        this.location.add(this.velocity);
+        this.acceleration.mult(0);
+    }
+
+    applyForce(f){
+        let force = f.clone();
+        force.div(this.mass);
+        this.acceleration.add(force);
     }
 
     draw(dt,ctx){
-
-        let r = Math.random(1);
-        console.log('----')
-        console.log(this.v);
-        let direction = [1,2,3,4].shuffle()[0];
-        switch(r){
-            case 1:
-                this.v.add(new Vector(0,-1));
-                break;
-            case 2:
-                this.v.add(new Vector(-1,0));
-                break;
-            case 3:
-                this.v.add(new Vector(0,1));
-                break;
-            case 4:
-                this.v.add(new Vector(1,0));
-                break
-        }
-        console.log(this.v);
-        console.log('----')
+        this.update();
         ctx.fillStyle ="#000000";
-        ctx.fillRect(this.v.x,this.v.y,1,1);
-
+        // ctx.fill(this.location.x,this.location.y,10,10);
+        ctx.beginPath();
+        ctx.arc(this.location.x+5,this.location.y+5,5,0,2*Math.PI,false)
+        ctx.fill();
+        ctx.lineWidth  = 1;
+        ctx.stroke()
     }
 }

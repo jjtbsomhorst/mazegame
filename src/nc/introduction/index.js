@@ -1,4 +1,4 @@
-import rw from './randomwalk'
+import rw from './Accelleration'
 
 // implement sprintf
 
