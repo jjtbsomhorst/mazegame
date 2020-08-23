@@ -16,7 +16,7 @@ export default class Walker {
 
     applyForce(f){
         let force = f.clone();
-        force.div(this.mass);
+        force = force.div(this.mass);
         this.acceleration.add(force);
     }
 

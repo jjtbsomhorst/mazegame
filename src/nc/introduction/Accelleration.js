@@ -1,5 +1,8 @@
 import Walker from "./walker";
 import Vector from "./Vector";
+import Gravity from "./Gravity";
+import Wind from "./Wind";
+import Drag from "./Drag";
 
 export default class accelleration{
     constructor(canvas,width,height){
@@ -16,15 +19,14 @@ export default class accelleration{
     }
 
     setup(){
-        // setup forces
-        this.forces.push(new Vector(0,0.3)); // gravity
-        this.forces.push(new Vector(0.05,0)) // wind
 
+        this.forces.push(new Gravity(0,0.3));
+        this.forces.push(new Wind(0.0,0));
+        this.forces.push(new Drag());
         // add entities
-        for(let i = 0; i < 100; i++){
+        for(let i = 0; i < 10; i++){
             let p = Vector.random2D(this.width,this.height);
-            let mass = Math.floor(Math.random() * 100);
-            this.walkers.push(new Walker(p,mass));
+            this.walkers.push(new Walker(p,Math.floor(Math.random()*5)));
         }
     }
 
@@ -41,7 +43,6 @@ export default class accelleration{
         }
 
         if (walker.location.y > this.height) {
-
             walker.velocity.y *= -1;
             walker.location.y = this.height;
         }
@@ -54,8 +55,9 @@ export default class accelleration{
         for(const w of this.walkers){
             this.checkEdges(w);
             for(const f of this.forces){
-                w.applyForce(f);
+                f.apply(w);
             }
+            // this.checkEdges(w);
         }
     }
 
